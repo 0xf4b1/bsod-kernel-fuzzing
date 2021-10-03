@@ -13,3 +13,6 @@
 [submodule "bsod-afl/AFLplusplus"]
 	path = bsod-afl/AFLplusplus
 	url = https://github.com/AFLplusplus/AFLplusplus
+[submodule "bsod-syzkaller/syzkaller"]
+	path = bsod-syzkaller/syzkaller
+	url = https://github.com/0xf4b1/syzkaller
