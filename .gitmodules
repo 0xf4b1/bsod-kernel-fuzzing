@@ -1,0 +1,3 @@
+[submodule "kvm-vmi/kvm-vmi"]
+	path = kvm-vmi/kvm-vmi
+	url = https://github.com/KVM-VMI/kvm-vmi
