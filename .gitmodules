@@ -7,3 +7,6 @@
 [submodule "kvm-vmi/libkvmi"]
 	path = kvm-vmi/libkvmi
 	url = https://github.com/bitdefender/libkvmi
+[submodule "kvm-vmi/dwarf2json"]
+	path = kvm-vmi/dwarf2json
+	url = https://github.com/tklengyel/dwarf2json
