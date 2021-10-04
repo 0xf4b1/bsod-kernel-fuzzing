@@ -1,0 +1,7 @@
+vfio_region_read
+vfio_region_write
+vfio_intx_interrupt
+vfio_intx_eoi
+vfio_msi_interrupt
+vfio_pci_read_config
+vfio_pci_write_config

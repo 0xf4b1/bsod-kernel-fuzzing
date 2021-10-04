@@ -1,0 +1,21 @@
+#!/bin/sh
+
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t debugfs none /sys/kernel/debug
+mount -t devtmpfs none /dev
+mkdir /dev/pts
+mount -t devpts none /dev/pts
+mount -t tmpfs none /tmp
+chmod 777 / /tmp
+
+# setup networking
+insmod e1000.ko.xz
+ip link set dev eth0 up
+ip addr add 10.0.2.15/24 dev eth0
+
+# load target kernel module
+# insmod moduke.ko
+sleep 30
+
+exec /usr/sbin/sshd -D
