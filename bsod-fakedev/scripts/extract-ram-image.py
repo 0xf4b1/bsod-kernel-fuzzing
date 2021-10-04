@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 
 mem = bytearray(int(sys.argv[2], 16))
