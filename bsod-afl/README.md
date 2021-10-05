@@ -16,14 +16,28 @@ $ cmake ..
 
 ## Fuzzing
 
-1) Start QEMU and load target module in guest
-2) Start bsod-afl on host
+1) Start QEMU with introspection enabled by adding the following parameters.
+
+```
+-chardev socket,path=/tmp/introspector,id=chardev0,reconnect=10
+-object secret,id=key0,data=some
+-object introspection,id=kvmi,chardev=chardev0,key=key0"
+```
+
+2) When the VM is booted, load the target module inside the guest and retrieve the load address.
+
+```
+# insmod module.ko
+# cat /proc/modules
+```
+
+3) Start bsod-afl on host.
 
 ```
 $ afl-fuzz -i input -o output -t 9999 -- ./bsod-afl --socket /tmp/introspector --json <kernel profile> --input @@ --module <module addr> --breakpoints <breakpoints file> --coverage block
 ```
 
-3) Start harness in guest
+4) Start harness in guest.
 
 ```
 $ ./harness
