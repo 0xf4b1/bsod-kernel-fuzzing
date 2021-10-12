@@ -30,8 +30,6 @@ bool afl;
 bool debug;
 addr_t address;
 addr_t address_pa;
-addr_t start;
-addr_t target;
 addr_t module_start;
 addr_t start_offset;
 addr_t target_offset;

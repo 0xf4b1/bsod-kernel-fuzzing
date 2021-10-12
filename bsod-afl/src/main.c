@@ -48,8 +48,6 @@ int main(int argc, char **argv) {
     mode = DYNAMIC;
     reconnect = false;
 
-    start = 0;
-    target = 0;
     module_start = 0;
     start_offset = 0;
     target_offset = 0;
@@ -140,9 +138,6 @@ int main(int argc, char **argv) {
     afl_setup();
 
     for (;;) {
-        start = module_start + start_offset;
-        target = module_start + target_offset;
-
         if (debug)
             printf("############ START ################\n");
 

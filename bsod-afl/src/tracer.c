@@ -97,7 +97,7 @@ static event_response_t tracer_cb(vmi_instance_t vmi, vmi_event_t *event) {
      * Reached start address for fuzzing, either the specified start address or the first
      * encountered breakpoint that is not part of the target.
      */
-    if (event->x86_regs->rax == HYPERCALL_TESTCASE || event->x86_regs->rip == start) {
+    if (event->x86_regs->rax == HYPERCALL_TESTCASE || (start_offset && event->x86_regs->rip == module_start + start_offset)) {
         if (debug)
             printf("VM reached the start address\n");
 
@@ -112,8 +112,8 @@ static event_response_t tracer_cb(vmi_instance_t vmi, vmi_event_t *event) {
         }
 
         // Set BP for target address
-        if (target)
-            assert(VMI_SUCCESS == vmi_write_va(vmi, target, 0, 1, &cc, NULL));
+        if (target_offset)
+            assert(VMI_SUCCESS == vmi_write_va(vmi, module_start + target_offset, 0, 1, &cc, NULL));
 
         // Breakpoint is compiled into the harness. Just increase RIP.
         if (!start_offset) {
@@ -128,7 +128,7 @@ static event_response_t tracer_cb(vmi_instance_t vmi, vmi_event_t *event) {
 
         // Restore instruction byte at start address
         vmi_write_8(vmi, &ctx, &start_byte);
-        reset_breakpoint = start;
+        reset_breakpoint = module_start + start_offset;
         return VMI_EVENT_RESPONSE_TOGGLE_SINGLESTEP;
     }
 
@@ -200,13 +200,13 @@ bool setup_trace(vmi_instance_t vmi) {
     if (debug)
         printf("Setup trace\n");
 
-    if (start && VMI_FAILURE == vmi_read_va(vmi, start, 0, 1, &start_byte, NULL))
+    if (start_offset && VMI_FAILURE == vmi_read_va(vmi, module_start + start_offset, 0, 1, &start_byte, NULL))
         return false;
 
-    if (start && VMI_FAILURE == vmi_write_va(vmi, start, 0, 1, &cc, NULL))
+    if (start_offset && VMI_FAILURE == vmi_write_va(vmi, module_start + start_offset, 0, 1, &cc, NULL))
         return false;
 
-    if (target && VMI_FAILURE == vmi_read_va(vmi, target, 0, 1, &target_byte, NULL))
+    if (target_offset && VMI_FAILURE == vmi_read_va(vmi, module_start + target_offset, 0, 1, &target_byte, NULL))
         return false;
 
     if (mode != DYNAMIC) {
@@ -314,11 +314,11 @@ void close_trace(vmi_instance_t vmi) {
     vmi_clear_event(vmi, &singlestep_event, NULL);
     vmi_clear_event(vmi, &cc_event, NULL);
 
-    if (start && start_byte != 0x90)
-        vmi_write_va(vmi, start, 0, 1, &start_byte, NULL);
+    if (start_offset && start_byte != 0x90)
+        vmi_write_va(vmi, module_start + start_offset, 0, 1, &start_byte, NULL);
 
-    if (target)
-        vmi_write_va(vmi, target, 0, 1, &target_byte, NULL);
+    if (target_offset)
+        vmi_write_va(vmi, module_start + target_offset, 0, 1, &target_byte, NULL);
 
     if (mode != DYNAMIC) {
         for (int i = 0; i < 0x1000; i++) {

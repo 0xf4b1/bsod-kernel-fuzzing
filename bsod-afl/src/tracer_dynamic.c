@@ -132,7 +132,7 @@ event_response_t handle_event_dynamic(vmi_instance_t vmi, vmi_event_t *event) {
     }
 
     // Reached target address for fuzzing
-    if (target && event->x86_regs->rip == target) {
+    if (target_offset && event->x86_regs->rip == module_start + target_offset) {
         if (debug)
             printf("VM reached the target address.\n");
 

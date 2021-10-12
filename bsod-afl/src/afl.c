@@ -99,7 +99,7 @@ void afl_setup(void) {
     unsigned char tmp[4];
     if (write(FORKSRV_FD + 1, tmp, 4) == 4) {
         afl = true;
-        afl_instrument_location(start);
+        afl_instrument_location(module_start + start_offset);
     }
 }
 

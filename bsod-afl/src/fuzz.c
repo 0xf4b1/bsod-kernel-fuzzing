@@ -52,7 +52,7 @@ bool fuzz() {
         printf("Starting fuzz loop\n");
 
     if (afl) {
-        afl_rewind(start);
+        afl_rewind(module_start + start_offset);
         afl_wait();
     }
 
