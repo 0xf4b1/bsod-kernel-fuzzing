@@ -3,6 +3,7 @@
 import sys
 from capstone import *
 from capstone.x86 import *
+from elftools.elf.elffile import ELFFile
 
 breakpoints = set()
 
@@ -15,7 +16,7 @@ def is_conditional(id):
 
 with open(sys.argv[1], 'rb') as f:
     # offset .text section
-    f.seek(0x80)
+    f.seek(ELFFile(f).get_section_by_name('.text').header['sh_offset'])
     buf = f.read()
     md = Cs(CS_ARCH_X86, CS_MODE_64)
 
