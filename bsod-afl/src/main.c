@@ -121,11 +121,6 @@ int main(int argc, char **argv) {
             return -1;
     }
 
-    if (cs_open(CS_ARCH_X86, pm == VMI_PM_IA32E ? CS_MODE_64 : CS_MODE_32, &cs_handle)) {
-        fprintf(stderr, "Capstone init failed\n");
-        return -1;
-    }
-
     char filename[20];
     snprintf(filename, 20, "coverage%c.txt", socket[strlen(socket) - 1]);
     coverage_fp = fopen(filename, "w");

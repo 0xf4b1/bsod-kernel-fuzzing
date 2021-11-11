@@ -36,8 +36,6 @@ addr_t target_offset;
 unsigned long limit;
 
 vmi_instance_t vmi;
-os_t os;
-page_mode_t pm;
 int interrupted;
 unsigned long tracer_counter;
 

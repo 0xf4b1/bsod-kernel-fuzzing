@@ -1,11 +1,6 @@
 #include <stdlib.h>
 
-#include "vmi.h"
-
-extern os_t os;
-extern int interrupted;
-extern bool failure;
-extern page_mode_t pm;
+#include "private.h"
 
 bool setup_vmi(vmi_instance_t *vmi, char *socket, char *json) {
     vmi_init_data_t *init_data = malloc(sizeof(vmi_init_data_t) + sizeof(vmi_init_data_entry_t));
@@ -17,12 +12,17 @@ bool setup_vmi(vmi_instance_t *vmi, char *socket, char *json) {
         vmi_init(vmi, VMI_KVM, NULL, VMI_INIT_EVENTS | VMI_INIT_DOMAINNAME, init_data, NULL))
         return false;
 
-    if (VMI_OS_UNKNOWN == (os = vmi_init_os(*vmi, VMI_CONFIG_JSON_PATH, json, NULL))) {
+    if (VMI_OS_UNKNOWN == vmi_init_os(*vmi, VMI_CONFIG_JSON_PATH, json, NULL)) {
         vmi_destroy(*vmi);
         return false;
     }
 
-    pm = vmi_get_page_mode(*vmi, 0);
+    if (mode == DYNAMIC && cs_handle == 0) {
+        if (cs_open(CS_ARCH_X86, vmi_get_page_mode(*vmi, 0) == VMI_PM_IA32E ? CS_MODE_64 : CS_MODE_32, &cs_handle)) {
+            fprintf(stderr, "Capstone init failed\n");
+            exit(-1);
+        }
+    }
 
     return true;
 }
