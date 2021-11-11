@@ -16,8 +16,9 @@ def is_conditional(id):
 
 with open(sys.argv[1], 'rb') as f:
     # offset .text section
-    f.seek(ELFFile(f).get_section_by_name('.text').header['sh_offset'])
-    buf = f.read()
+    text = ELFFile(f).get_section_by_name(".text").header
+    f.seek(text["sh_offset"])
+    buf = f.read(text["sh_size"])
     md = Cs(CS_ARCH_X86, CS_MODE_64)
 
     source = None
