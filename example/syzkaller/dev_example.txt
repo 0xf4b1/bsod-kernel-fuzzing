@@ -1,0 +1,5 @@
+resource fd_example[fd]
+
+openat$example(fd const[AT_FDCWD], file ptr[in, string["/dev/testdriver"]], flags flags[open_flags], mode const[0]) fd_example
+close$example(fd fd_example)
+ioctl$example(fd fd_example, cmd const[0xc0044600], arg ptr[in, int32])
