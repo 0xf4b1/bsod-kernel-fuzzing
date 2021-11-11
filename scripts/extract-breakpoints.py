@@ -5,7 +5,6 @@ from capstone import *
 from capstone.x86 import *
 from elftools.elf.elffile import ELFFile
 
-breakpoints = set()
 
 def is_conditional(id):
     return id in [X86_INS_JA, X86_INS_JAE, X86_INS_JBE, X86_INS_JB,
@@ -27,9 +26,8 @@ with open(sys.argv[1], 'rb') as f:
     for i in md.disasm(buf, 0x0):
 
         if add_next:
-            # add address of instruction after cf that will be reached when
-            # the jump was not taken
-            breakpoints.add((source, target, i.address))
+            # address of instruction after cf that will be reached when the jump was not taken
+            print("{},{},{}".format(hex(source), hex(target), hex(i.address)))
             add_next = False
 
         if is_conditional(i.id):
@@ -41,7 +39,3 @@ with open(sys.argv[1], 'rb') as f:
 
             # hint to add the address of the next instruction when jump is not taken
             add_next = True
-
-with open(sys.argv[1] + '-breakpoints', 'w') as file:
-    for source, target, not_taken in breakpoints:
-        file.write('{},{},{}\n'.format(hex(source), hex(target), hex(not_taken)))
