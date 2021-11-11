@@ -10,7 +10,7 @@ RUN git clone https://github.com/0xf4b1/bsod-kernel-fuzzing && cd bsod-kernel-fu
 RUN cd /bsod-kernel-fuzzing/kvm-vmi/libkvmi && ./bootstrap && ./configure && make -j$(nproc) && make install
 
 # build libvmi
-RUN cd /bsod-kernel-fuzzing/kvm-vmi/libvmi && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_KVM=ON -DENABLE_XEN=OFF -DENABLE_BAREFLANK=OFF && make -j$(nproc) && make install
+RUN cd /bsod-kernel-fuzzing/kvm-vmi/libvmi && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_KVM=ON -DENABLE_XEN=OFF -DENABLE_BAREFLANK=OFF && make -j$(nproc) && make install && ldconfig
 
 # build qemu
 RUN cd /bsod-kernel-fuzzing/kvm-vmi/kvm-vmi/qemu && ./configure --target-list=x86_64-softmmu --prefix=/usr/local && make -j$(nproc) && make install
